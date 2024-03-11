@@ -1,4 +1,4 @@
-import express, { urlencoded } from "express";
+import express from "express";
 import cookieParser from "cookie-parser";
 import './config/dbConnect.js'
 import path from "path";

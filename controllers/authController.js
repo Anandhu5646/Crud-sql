@@ -1,5 +1,6 @@
 import AuthHelper from '../helper/authHelper.js';
 
+
 export const register = async (req, res) => {
 
   try {
@@ -11,9 +12,8 @@ export const register = async (req, res) => {
     return res.status(400).json({ errors: [{ msg: 'Invalid input data' }] });
   }
 
-    res.json("success")
-    // const result = await AuthHelper.registerUser(name, email, password, profilePic, role);
-    // res.json(result);
+    const result = await AuthHelper.registerUser(name, email, password, profilePic, role);
+    res.json(result);
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Server error');
@@ -40,3 +40,5 @@ export const login = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+

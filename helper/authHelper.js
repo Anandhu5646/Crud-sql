@@ -19,17 +19,11 @@ class AuthHelper {
       if (profilePic) {
         userData.profilePic = profilePic;
       }
-      if (req?.user && req?.user?.role === 'admin') {
-        userData.role = role || 'user'; 
-      } else {
-        userData.role = 'user'; 
-      }
-
       const user = await User.create(userData);
       const payload = {
         user: {
           id: user.id,
-          role: user.role,
+          
         },
       };
 
