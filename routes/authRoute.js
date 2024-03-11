@@ -1,29 +1,22 @@
-import express from 'express';
-import { check } from 'express-validator';
-import AuthController from '../controllers/authController.js';
-import multer from 'multer';
+import express from "express";
+import { login, register } from "../controllers/authController.js";
+import multer from "multer";
+import path from "path";
 const router = express.Router();
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage: storage });
 
-router.post(
-  '/register',
-  [
-    check('name', 'Name is required').not().isEmpty(),
-    check('email', 'Please include a valid email').isEmail(),
-    check('password', 'Please enter a password with 6 or more characters').isLength({ min: 6 }),
-    
-  ], 
 
-  AuthController.register
-);
 
-router.post(
-  '/login',
-  [
-    check('email', 'Please include a valid email').isEmail(),
-    check('password', 'Password is required').exists(),
-  ],
-  AuthController.login
-);
+router.post("/register", upload.single("profilePic"), register);
+router.post("/login", login);
 
 export default router;

@@ -1,44 +1,42 @@
-import { validationResult } from 'express-validator';
 import AuthHelper from '../helper/authHelper.js';
 
-class AuthController {
-  static async register(req, res) {
+export const register = async (req, res) => {
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+  try {
+  const { name, email, password ,role} = req.body;
+  console.log(name, email,password);
+  const profilePic = req.file ? req.file.path : null;
 
-    const { name, email, password } = req.body;
-    const base64ProfilePic = req.body.profilePic || null;
-    console.log(name, email, password);
-    try {
-      const result = await AuthHelper.registerUser(name, email, password, base64ProfilePic);
-      res.json(result);
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send('Server error');
-    }
+  if (!name || !email || !password || password.length < 6) {
+    return res.status(400).json({ errors: [{ msg: 'Invalid input data' }] });
   }
 
-  static async login(req, res) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const { email, password } = req.body;
-
-    try {
-      const result = await AuthHelper.loginUser(email, password);
-      console.log(result,'result login');
-      res.json(result);
-      console.log('login successfull');
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send('Server error');
-    }
+    res.json("success")
+    // const result = await AuthHelper.registerUser(name, email, password, profilePic, role);
+    // res.json(result);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
   }
-}
+};
 
-export default AuthController;
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ errors: [{ msg: 'Invalid email' }] });
+  }
+ 
+  if (!password) {
+    return res.status(400).json({ errors: [{ msg: 'Invalid password' }] });
+  }
+
+  try {
+    const result = await AuthHelper.loginUser(email, password);
+    console.log(result, 'login successful');
+    res.json(result);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
+  }
+};
